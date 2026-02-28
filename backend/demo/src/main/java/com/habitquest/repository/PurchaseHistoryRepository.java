@@ -1,0 +1,12 @@
+package com.habitquest.repository;
+
+import com.habitquest.entity.PurchaseHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface PurchaseHistoryRepository extends JpaRepository<PurchaseHistory, Long> {
+    List<PurchaseHistory> findByUserIdOrderByPurchasedAtDesc(Long userId, org.springframework.data.domain.Pageable pageable);
+}
