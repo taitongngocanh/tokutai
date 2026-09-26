@@ -11,13 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import com.habitquest.entity.GoodHabitCompletion;
+import com.habitquest.repository.GoodHabitCompletionRepository;
 
 @Service
 @RequiredArgsConstructor
 public class GoodHabitService {
 
     private final GoodHabitRepository goodHabitRepository;
+    private final GoodHabitCompletionRepository completionRepository;
     private final UserService userService;
     private final XPService xpService;
 
@@ -54,17 +58,56 @@ public class GoodHabitService {
 
     @Transactional
     public GoodHabitDto completeToday(String username, Long id) {
+        return toggleCompleteForDate(username, id, LocalDate.now());
+    }
+
+    @Transactional
+    public GoodHabitDto toggleCompleteForDate(String username, Long id, LocalDate date) {
         GoodHabit habit = getHabitForUser(username, id);
-        if (habit.isCompletedToday()) {
-            throw new IllegalStateException("Habit already completed today");
-        }
         User user = habit.getUser();
-        int oldXP = user.getXp();
-        xpService.addXP(user.getId(), habit.getXpReward(), "Good habit: " + habit.getName());
-        habit.setLastCompletedDate(LocalDate.now());
-        goodHabitRepository.save(habit);
-        user = userService.getUserByUsername(username);
+
+        Optional<GoodHabitCompletion> completion = completionRepository.findByGoodHabitIdAndDate(id, date);
+        
+        if (completion.isPresent()) {
+            // Uncomplete
+            completionRepository.delete(completion.get());
+            xpService.subtractXP(user.getId(), habit.getXpReward(), "Undo good habit: " + habit.getName());
+            
+            // Re-evaluate lastCompletedDate if it was today
+            if (date.equals(LocalDate.now())) {
+                habit.setLastCompletedDate(null); // Simple fallback, or query for max date
+                goodHabitRepository.save(habit);
+            }
+        } else {
+            // Complete
+            GoodHabitCompletion newCompletion = GoodHabitCompletion.builder()
+                .goodHabit(habit)
+                .date(date)
+                .build();
+            completionRepository.save(newCompletion);
+            xpService.addXP(user.getId(), habit.getXpReward(), "Good habit: " + habit.getName());
+            
+            if (date.equals(LocalDate.now()) || (habit.getLastCompletedDate() == null || date.isAfter(habit.getLastCompletedDate()))) {
+                habit.setLastCompletedDate(date);
+                goodHabitRepository.save(habit);
+            }
+        }
+        
         return toDto(habit);
+    }
+    
+    public List<LocalDate> getCompletions(String username, Long id, LocalDate startDate, LocalDate endDate) {
+        GoodHabit habit = getHabitForUser(username, id);
+        return completionRepository.findByGoodHabitUserIdAndDateBetween(habit.getUser().getId(), startDate, endDate)
+                .stream()
+                .filter(c -> c.getGoodHabit().getId().equals(id))
+                .map(GoodHabitCompletion::getDate)
+                .collect(Collectors.toList());
+    }
+    
+    public List<GoodHabitCompletion> getAllCompletionsForUser(String username, LocalDate startDate, LocalDate endDate) {
+        User user = userService.getUserByUsername(username);
+        return completionRepository.findByGoodHabitUserIdAndDateBetween(user.getId(), startDate, endDate);
     }
 
     private GoodHabit getHabitForUser(String username, Long id) {

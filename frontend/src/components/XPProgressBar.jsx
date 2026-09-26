@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 function getRankColor(rank) {
   switch (rank) {
-    case 'Bronze': return 'from-amber-700 to-amber-900';
-    case 'Gold': return 'from-yellow-500 to-amber-600';
-    case 'Diamond': return 'from-cyan-300 to-blue-500';
-    default: return 'from-quest-accent to-blue-600';
+    case 'Bronze': return 'from-amber-500 to-amber-700';
+    case 'Gold': return 'from-yellow-400 to-yellow-600';
+    case 'Diamond': return 'from-blue-400 to-blue-600';
+    default: return 'from-brand-400 to-brand-600';
   }
 }
 
@@ -23,11 +23,11 @@ export default function XPProgressBar({ xpProgress = 0, rank = 'Bronze', animate
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-sm mb-1">
-        <span className="font-game text-quest-accent">XP Progress</span>
-        <span className="text-slate-400">{displayProgress}%</span>
+      <div className="flex justify-between text-sm mb-1.5 font-medium">
+        <span className="text-surface-600">Progress</span>
+        <span className="text-surface-700">{displayProgress}%</span>
       </div>
-      <div className="h-4 bg-quest-card rounded-full overflow-hidden border border-slate-700/50">
+      <div className="h-3 bg-surface-200 rounded-full overflow-hidden border border-surface-300">
         <div
           className={`h-full bg-gradient-to-r ${getRankColor(rank)} xp-bar-fill rounded-full`}
           style={{ width: `${displayProgress}%` }}

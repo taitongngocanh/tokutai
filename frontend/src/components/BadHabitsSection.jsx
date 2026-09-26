@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { badHabitsAPI } from '../api/api';
 import HabitCard from './HabitCard';
+import { Plus, AlertTriangle } from 'lucide-react';
 
 export default function BadHabitsSection({ onDataChange }) {
   const [habits, setHabits] = useState([]);
@@ -42,7 +43,7 @@ export default function BadHabitsSection({ onDataChange }) {
       loadHabits();
       onDataChange?.();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to record');
+      alert(err.response?.data?.message || 'Failed to record violation');
     }
   };
 
@@ -57,7 +58,7 @@ export default function BadHabitsSection({ onDataChange }) {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this habit?')) return;
+    if (!confirm('Delete this bad habit?')) return;
     try {
       await badHabitsAPI.delete(id);
       loadHabits();
@@ -68,47 +69,60 @@ export default function BadHabitsSection({ onDataChange }) {
   };
 
   return (
-    <section className="mb-10">
+    <section>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-game text-xl text-red-400">⚠️ Bad Habits</h3>
+        <h3 className="font-bold text-lg text-surface-900 flex items-center">
+          <AlertTriangle size={20} className="mr-2 text-red-500" /> Bad Habits
+        </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 rounded-lg bg-red-600/80 hover:bg-red-500 font-semibold text-sm"
+          className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium transition-colors border border-red-200"
         >
-          {showForm ? 'Cancel' : '+ Add Habit'}
+          <Plus size={16} />
+          <span>{showForm ? 'Cancel' : 'New Habit'}</span>
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mb-4 p-4 bg-quest-card/60 rounded-xl border border-slate-700/50">
-          {error && <p className="text-red-400 text-sm mb-2">{error}</p>}
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Habit name"
-            className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 mb-2"
-            required
-          />
-          <div className="flex gap-2 items-center">
-            <label className="text-slate-400 text-sm">XP Penalty:</label>
-            <input
-              type="number"
-              min="1"
-              value={xpPenalty}
-              onChange={(e) => setXpPenalty(parseInt(e.target.value) || 30)}
-              className="w-24 px-2 py-1 rounded bg-slate-800 border border-slate-600 text-slate-100"
-            />
-            <button type="submit" disabled={loading} className="ml-auto px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500">
-              {loading ? 'Creating...' : 'Create'}
-            </button>
+        <form onSubmit={handleCreate} className="mb-4 p-4 bg-white rounded-xl border border-surface-200 shadow-sm">
+          {error && <p className="text-red-500 text-sm mb-3 font-medium bg-red-50 p-2 rounded">{error}</p>}
+          <div className="space-y-3">
+            <div>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="What habit do you want to break?"
+                className="w-full px-3 py-2 rounded-lg bg-surface-50 border border-surface-300 text-surface-900 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all"
+                required
+              />
+            </div>
+            <div className="flex gap-3 items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <label className="text-surface-600 text-sm font-medium">XP Penalty</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={xpPenalty}
+                  onChange={(e) => setXpPenalty(parseInt(e.target.value) || 30)}
+                  className="w-20 px-2 py-1.5 rounded-lg bg-surface-50 border border-surface-300 text-surface-900 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                />
+              </div>
+              <button type="submit" disabled={loading} className="px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-colors text-sm">
+                {loading ? 'Saving...' : 'Save Habit'}
+              </button>
+            </div>
           </div>
         </form>
       )}
 
       <div className="space-y-3">
         {habits.length === 0 && !showForm && (
-          <p className="text-slate-500 text-center py-8">No bad habits tracked. Stay strong!</p>
+          <div className="text-center py-10 bg-white rounded-xl border border-dashed border-surface-300">
+            <AlertTriangle size={32} className="mx-auto text-surface-300 mb-2" />
+            <p className="text-surface-500 font-medium">No bad habits to break.</p>
+            <p className="text-surface-400 text-sm">Keep up the good work!</p>
+          </div>
         )}
         {habits.map((habit) => (
           <HabitCard

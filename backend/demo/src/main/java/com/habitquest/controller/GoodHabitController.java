@@ -47,4 +47,20 @@ public class GoodHabitController {
     public ResponseEntity<GoodHabitDto> completeToday(@AuthenticationPrincipal UserDetails user, @PathVariable Long id) {
         return ResponseEntity.ok(goodHabitService.completeToday(user.getUsername(), id));
     }
+
+    @PostMapping("/{id}/toggle")
+    public ResponseEntity<GoodHabitDto> toggleCompleteForDate(
+            @AuthenticationPrincipal UserDetails user, 
+            @PathVariable Long id, 
+            @RequestParam String date) {
+        return ResponseEntity.ok(goodHabitService.toggleCompleteForDate(user.getUsername(), id, java.time.LocalDate.parse(date)));
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<com.habitquest.entity.GoodHabitCompletion>> getHistory(
+            @AuthenticationPrincipal UserDetails user,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return ResponseEntity.ok(goodHabitService.getAllCompletionsForUser(user.getUsername(), java.time.LocalDate.parse(startDate), java.time.LocalDate.parse(endDate)));
+    }
 }

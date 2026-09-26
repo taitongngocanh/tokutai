@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import { Activity } from 'lucide-react';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -15,14 +16,12 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+
     setLoading(true);
     try {
       const { data } = await authAPI.register({ username, password });
@@ -36,60 +35,88 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="font-game text-4xl text-quest-accent mb-2">HABIT QUEST</h1>
-          <p className="text-slate-400">Start your journey</p>
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-surface-50">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center">
+          <div className="bg-brand-500 text-white p-3 rounded-xl shadow-sm">
+            <Activity size={32} />
+          </div>
         </div>
-        <div className="bg-quest-card/90 rounded-2xl p-8 border border-slate-700/50 shadow-xl">
-          <h2 className="font-game text-xl mb-6 text-center">Register</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-surface-900 tracking-tight">
+          Create your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-surface-600">
+          Already have an account?{' '}
+          <Link to="/login" className="font-medium text-brand-600 hover:text-brand-500">
+            Sign in here
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-sm sm:rounded-xl sm:px-10 border border-surface-200">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="p-3 rounded-lg bg-red-900/50 border border-red-700/50 text-red-300 text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
-            <input
-              type="text"
-              placeholder="Username (min 3 chars)"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-quest-accent focus:border-transparent"
-              required
-              minLength={3}
-            />
-            <input
-              type="password"
-              placeholder="Password (min 6 chars)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-quest-accent focus:border-transparent"
-              required
-              minLength={6}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-quest-accent focus:border-transparent"
-              required
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-lg bg-green-600 hover:bg-green-500 font-game font-semibold text-lg disabled:opacity-50 transition-all"
-            >
-              {loading ? 'Creating...' : 'Create Account'}
-            </button>
+            
+            <div>
+              <label className="block text-sm font-medium text-surface-700">
+                Username
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-surface-300 rounded-lg shadow-sm placeholder-surface-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-shadow"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-surface-700">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-surface-300 rounded-lg shadow-sm placeholder-surface-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-shadow"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-surface-700">
+                Confirm Password
+              </label>
+              <div className="mt-1">
+                <input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-surface-300 rounded-lg shadow-sm placeholder-surface-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-shadow"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors disabled:opacity-50"
+              >
+                {loading ? 'Creating account...' : 'Create account'}
+              </button>
+            </div>
           </form>
-          <p className="mt-6 text-center text-slate-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-quest-accent hover:underline font-semibold">
-              Login
-            </Link>
-          </p>
         </div>
       </div>
     </div>

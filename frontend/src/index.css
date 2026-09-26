@@ -1,39 +1,24 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap');
-
 :root {
   --xp-progress: 0;
-  --quest-dark: #0f0f1a;
-  --quest-card: #1a1a2e;
-  --quest-accent: #4a90d9;
-}
-
-@theme {
-  --font-game: 'Orbitron', sans-serif;
-  --color-quest-dark: #0f0f1a;
-  --color-quest-card: #1a1a2e;
-  --color-quest-accent: #4a90d9;
-  --color-quest-success: #2ecc71;
-  --color-quest-danger: #e74c3c;
-  --color-bronze: #cd7f32;
-  --color-gold: #ffd700;
-  --color-diamond: #b9f2ff;
 }
 
 body {
   margin: 0;
-  font-family: 'Rajdhani', sans-serif;
-  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafb;
   min-height: 100vh;
-  color: #e2e8f0;
+  color: #111827;
 }
 
-.font-game {
-  font-family: 'Orbitron', sans-serif;
+/* Base styles for the app */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-/* XP Bar animation */
 .xp-bar-fill {
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }

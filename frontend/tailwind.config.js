@@ -7,18 +7,23 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        game: ['Orbitron', 'Impact', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
       colors: {
-        bronze: '#cd7f32',
-        gold: '#ffd700',
-        diamond: '#b9f2ff',
-        quest: {
-          dark: '#0f0f1a',
-          card: '#1a1a2e',
-          accent: '#4a90d9',
-          success: '#2ecc71',
-          danger: '#e74c3c',
+        brand: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          900: '#1e3a8a',
+        },
+        surface: {
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          800: '#1f2937',
+          900: '#111827',
         }
       },
       animation: {

@@ -10,12 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import com.habitquest.repository.BadHabitViolationRepository;
 
 @Service
 @RequiredArgsConstructor
 public class BadHabitService {
 
     private final BadHabitRepository badHabitRepository;
+    private final BadHabitViolationRepository violationRepository;
     private final UserService userService;
     private final XPService xpService;
 
@@ -59,6 +62,11 @@ public class BadHabitService {
         habit.getViolations().add(violation);
         badHabitRepository.save(habit);
         return toDto(habit);
+    }
+    
+    public List<BadHabitViolation> getAllViolationsForUser(String username, LocalDateTime startDate, LocalDateTime endDate) {
+        var user = userService.getUserByUsername(username);
+        return violationRepository.findByBadHabitUserIdAndViolatedAtBetween(user.getId(), startDate, endDate);
     }
 
     private BadHabit getHabitForUser(String username, Long id) {

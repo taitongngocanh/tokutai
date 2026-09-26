@@ -39,6 +39,8 @@ export const goodHabitsAPI = {
   update: (id, data) => api.put(`/habits/good/${id}`, data),
   delete: (id) => api.delete(`/habits/good/${id}`),
   complete: (id) => api.post(`/habits/good/${id}/complete`),
+  toggle: (id, date) => api.post(`/habits/good/${id}/toggle?date=${date}`),
+  getHistory: (startDate, endDate) => api.get(`/habits/good/history?startDate=${startDate}&endDate=${endDate}`),
 };
 
 export const badHabitsAPI = {
@@ -47,6 +49,7 @@ export const badHabitsAPI = {
   update: (id, data) => api.put(`/habits/bad/${id}`, data),
   delete: (id) => api.delete(`/habits/bad/${id}`),
   violate: (id) => api.post(`/habits/bad/${id}/violate`),
+  getHistory: (startDate, endDate) => api.get(`/habits/bad/history?startDate=${startDate}&endDate=${endDate}`),
 };
 
 export const rewardsAPI = {

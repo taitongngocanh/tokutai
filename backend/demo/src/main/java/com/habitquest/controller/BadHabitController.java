@@ -47,4 +47,15 @@ public class BadHabitController {
     public ResponseEntity<BadHabitDto> recordViolation(@AuthenticationPrincipal UserDetails user, @PathVariable Long id) {
         return ResponseEntity.ok(badHabitService.recordViolation(user.getUsername(), id));
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<com.habitquest.entity.BadHabitViolation>> getHistory(
+            @AuthenticationPrincipal UserDetails user,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return ResponseEntity.ok(badHabitService.getAllViolationsForUser(
+                user.getUsername(), 
+                java.time.LocalDateTime.parse(startDate + "T00:00:00"), 
+                java.time.LocalDateTime.parse(endDate + "T23:59:59")));
+    }
 }
